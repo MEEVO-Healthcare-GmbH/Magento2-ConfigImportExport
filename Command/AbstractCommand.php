@@ -105,7 +105,12 @@ abstract class AbstractCommand extends Command
         $configLoader = $this->objectManager->get('Magento\Framework\ObjectManager\ConfigLoaderInterface');
         $this->objectManager->configure($configLoader->load($area));
 
-        $this->registry->register('isSecureArea', true);
+        try {
+            $this->registry->register('isSecureArea', true);
+        } catch (\RuntimeException $e) {
+            $this->registry->unregister('isSecureArea');
+            $this->registry->register('isSecureArea', true);
+        }
     }
 
     /**
